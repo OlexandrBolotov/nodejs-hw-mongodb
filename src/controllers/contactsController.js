@@ -7,8 +7,25 @@ import {
   deleteContactById,
 } from '../services/contactsService.js';
 
-export const getContactsController = async (req, res, next) => {
-  const contacts = await getAllContacts();
+export const getContactsController = async (req, res) => {
+  const {
+    page,
+    perPage,
+    sortBy,
+    sortOrder,
+    type,
+    isFavourite,
+  } = req.query;
+
+  const contacts = await getAllContacts({
+    page,
+    perPage,
+    sortBy,
+    sortOrder,
+    type,
+    isFavourite,
+  });
+
   res.status(200).json({
     status: 200,
     message: 'Successfully found contacts!',
@@ -16,7 +33,7 @@ export const getContactsController = async (req, res, next) => {
   });
 };
 
-export const getContactByIdController = async (req, res, next) => {
+export const getContactByIdController = async (req, res) => {
   const { contactId } = req.params;
   const contact = await getContactById(contactId);
 
@@ -31,13 +48,7 @@ export const getContactByIdController = async (req, res, next) => {
   });
 };
 
-export const createContactController = async (req, res, next) => {
-  const { name, phoneNumber, contactType } = req.body;
-
-  if (!name || !phoneNumber || !contactType) {
-    throw createError(400, 'Missing required fields');
-  }
-
+export const createContactController = async (req, res) => {
   const newContact = await createContact(req.body);
 
   res.status(201).json({
@@ -47,7 +58,7 @@ export const createContactController = async (req, res, next) => {
   });
 };
 
-export const updateContactByIdController = async (req, res, next) => {
+export const updateContactByIdController = async (req, res) => {
   const { contactId } = req.params;
   const updatedContact = await updateContactById(contactId, req.body);
 
@@ -62,7 +73,7 @@ export const updateContactByIdController = async (req, res, next) => {
   });
 };
 
-export const deleteContactByIdController = async (req, res, next) => {
+export const deleteContactByIdController = async (req, res) => {
   const { contactId } = req.params;
   const deletedContact = await deleteContactById(contactId);
 
