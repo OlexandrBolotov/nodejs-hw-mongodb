@@ -5,8 +5,18 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import User from '../models/userModel.js';
 import Session from '../models/sessionModel.js';
-
-const { ACCESS_TOKEN_SECRET, REFRESH_TOKEN_SECRET } = process.env;
+import nodemailer from 'nodemailer';
+const {
+  ACCESS_TOKEN_SECRET,
+  REFRESH_TOKEN_SECRET,
+  SMTP_HOST,
+  SMTP_PORT,
+  SMTP_USER,
+  SMTP_PASSWORD,
+  SMTP_FROM,
+  JWT_SECRET,
+  APP_DOMAIN,
+} = process.env;
 const ACCESS_EXPIRES = 15 * 60 * 1000; 
 const REFRESH_EXPIRES = 30 * 24 * 60 * 60 * 1000; 
 
@@ -68,4 +78,47 @@ export const logoutUser = async (refreshToken) => {
   if (refreshToken) {
     await Session.deleteOne({ refreshToken });
   }
+};
+export const sendResetEmail = async (email) => {
+  const user = await User.findOne({ email });
+  if (!user) {
+    throw createError(404, 'User not found!');
+  }
+  const token = jwt.sign({ email }, JWT_SECRET, { expiresIn: '5m' });
+  const transporter = nodemailer.createTransport({
+    host: SMTP_HOST,
+    port: Number(SMTP_PORT),
+    secure: false,
+    auth: {
+      user: SMTP_USER,
+      pass: SMTP_PASSWORD,
+    },
+  });
+  const link = `${APP_DOMAIN}/reset-password?token=${token}`;
+  try {
+    await transporter.sendMail({
+      from: SMTP_FROM,
+      to: email,
+      subject: 'Reset password',
+      html: `<a href="${link}">Reset password</a>`,
+    });
+  } catch {
+    throw createError(500, 'Failed to send the email, please try again later.');
+  }
+};
+
+export const resetPassword = async ({ token, password }) => {
+  let payload;
+  try {
+    payload = jwt.verify(token, JWT_SECRET);
+  } catch {
+    throw createError(401, 'Token is expired or invalid.');
+  }
+  const user = await User.findOne({ email: payload.email });
+  if (!user) {
+    throw createError(404, 'User not found!');
+  }
+  const hashed = await bcrypt.hash(password, 10);
+  await User.updateOne({ _id: user._id }, { password: hashed });
+  await Session.deleteMany({ userId: user._id });
 };
