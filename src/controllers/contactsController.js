@@ -6,6 +6,8 @@ import {
   updateContactById,
   deleteContactById,
 } from '../services/contactsService.js';
+import fs from 'fs/promises';
+import { uploadImage } from '../utils/cloudinary.js';
 
 export const getContactsController = async (req, res) => {
   const {
@@ -48,7 +50,17 @@ export const getContactByIdController = async (req, res) => {
 };
 
 export const createContactController = async (req, res) => {
-  const newContact = await createContact({ ...req.body, userId: req.user._id });
+  let photoUrl;
+  if (req.file) {
+    photoUrl = await uploadImage(req.file.path);
+    await fs.unlink(req.file.path);
+  }
+  const newContact = await createContact({
+    ...req.body,
+    userId: req.user._id,
+    ...(photoUrl && { photo: photoUrl }),
+  });
+
 
   res.status(201).json({
     status: 201,
@@ -59,7 +71,15 @@ export const createContactController = async (req, res) => {
 
 export const updateContactByIdController = async (req, res) => {
   const { contactId } = req.params;
-  const updatedContact = await updateContactById(req.user._id, contactId, req.body);
+  let photoUrl;
+  if (req.file) {
+    photoUrl = await uploadImage(req.file.path);
+    await fs.unlink(req.file.path);
+  }
+  const updatedContact = await updateContactById(req.user._id, contactId, {
+    ...req.body,
+    ...(photoUrl && { photo: photoUrl }),
+  });
 
   if (!updatedContact) {
     throw createError(404, 'Contact not found');
