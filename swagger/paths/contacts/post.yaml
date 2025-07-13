@@ -1,8 +1,8 @@
 tags:
   - Contacts
-summary: Create contact
+summary: Create a new contact
 operationId: createContact
-description: Create a new contact
+description: Creates a new contact
 security:
   - bearerAuth: []
 requestBody:
@@ -14,21 +14,27 @@ requestBody:
         properties:
           name:
             type: string
-          phoneNumber:
-            type: string
           email:
             type: string
-          isFavourite:
-            type: boolean
+            format: email
+          phoneNumber:
+            type: string
           contactType:
             type: string
+            enum: [personal, work, other]
+          isFavourite:
+            type: boolean
           photo:
             type: string
             format: binary
 responses:
   '201':
-    description: Contact created
+    description: Contact successfully created
     content:
       application/json:
         schema:
           $ref: ../../components/schemas/Contact.yaml
+  '400':
+    description: Invalid input data
+  '401':
+    description: Unauthorized – missing or invalid token

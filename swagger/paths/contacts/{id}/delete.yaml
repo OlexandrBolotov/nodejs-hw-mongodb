@@ -12,3 +12,5 @@ responses:
     description: Successfully deleted
   '404':
     $ref: ../../../components/responses/NotFound.yaml
+  '401':
+    description: Unauthorized – access token is missing or invalid
