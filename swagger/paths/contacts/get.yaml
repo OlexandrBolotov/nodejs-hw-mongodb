@@ -1,0 +1,47 @@
+tags:
+  - Contacts
+summary: Get contacts
+operationId: getContacts
+description: Get a list of contacts with pagination
+security:
+  - bearerAuth: []
+parameters:
+  - name: page
+    in: query
+    description: Page number
+    schema:
+      type: integer
+  - name: perPage
+    in: query
+    description: Items per page
+    schema:
+      type: integer
+  - name: sortBy
+    in: query
+    schema:
+      type: string
+  - name: sortOrder
+    in: query
+    schema:
+      type: string
+      enum: [asc, desc]
+  - name: type
+    in: query
+    schema:
+      type: string
+  - name: isFavourite
+    in: query
+    schema:
+      type: boolean
+responses:
+  '200':
+    description: Successful operation
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            data:
+              type: array
+              items:
+                $ref: ../../components/schemas/Contact.yaml

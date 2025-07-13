@@ -3,6 +3,8 @@ import cors from 'cors';
 import pino from 'pino-http';
 import contactsRouter from './routers/contacts.js';
 import authRouter from './routers/auth.js';
+import swaggerUi from 'swagger-ui-express';
+import swaggerDocument from '../docs/swagger.json' assert { type: 'json' };
 import cookieParser from 'cookie-parser';
 import notFoundHandler from './middlewares/notFoundHandler.js';
 import errorHandler from './middlewares/errorHandler.js';
@@ -15,6 +17,8 @@ const setupServer = () => {
   app.use(express.json());
   app.use(cookieParser());
 
+  app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+  
   app.use('/contacts', contactsRouter);
   app.use('/auth', authRouter);
   app.use(notFoundHandler);
