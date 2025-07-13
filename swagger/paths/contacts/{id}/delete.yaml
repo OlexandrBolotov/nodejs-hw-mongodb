@@ -6,9 +6,9 @@ description: Remove a contact
 security:
   - bearerAuth: []
 parameters:
-  - $ref: ../../components/parameters/contactId.yaml
+  - $ref: ../../../components/parameters/contactId.yaml
 responses:
   '204':
     description: Successfully deleted
   '404':
-    $ref: ../../components/responses/NotFound.yaml
+    $ref: ../../../components/responses/NotFound.yaml

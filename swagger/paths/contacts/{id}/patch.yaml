@@ -6,7 +6,7 @@ description: Update fields of a contact
 security:
   - bearerAuth: []
 parameters:
-  - $ref: ../../components/parameters/contactId.yaml
+  - $ref: ../../../components/parameters/contactId.yaml
 requestBody:
   required: true
   content:
@@ -33,6 +33,6 @@ responses:
     content:
       application/json:
         schema:
-          $ref: ../../components/schemas/Contact.yaml
+          $ref: ../../../components/schemas/Contact.yaml
   '404':
-    $ref: ../../components/responses/NotFound.yaml
+    $ref: ../../../components/responses/NotFound.yaml

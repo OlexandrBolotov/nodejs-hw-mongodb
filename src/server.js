@@ -4,10 +4,15 @@ import pino from 'pino-http';
 import contactsRouter from './routers/contacts.js';
 import authRouter from './routers/auth.js';
 import swaggerUi from 'swagger-ui-express';
-import swaggerDocument from '../docs/swagger.json' assert { type: 'json' };
+import fs from 'fs';
+import path from 'path';
 import cookieParser from 'cookie-parser';
 import notFoundHandler from './middlewares/notFoundHandler.js';
 import errorHandler from './middlewares/errorHandler.js';
+
+const swaggerDocument = JSON.parse(
+  fs.readFileSync(path.resolve('docs/swagger.json'), 'utf-8')
+);
 
 const setupServer = () => {
   const app = express();
