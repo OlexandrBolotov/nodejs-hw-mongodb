@@ -33,8 +33,28 @@ responses:
     content:
       application/json:
         schema:
-          $ref: ../../../components/schemas/Contact.yaml
+          type: object
+          properties:
+            status:
+              type: integer
+              example: 200
+            message:
+              type: string
+              example: Successfully patched a contact!
+            data:
+              $ref: ../../../components/schemas/Contact.yaml
   '404':
     $ref: ../../../components/responses/NotFound.yaml
-    '401':
+  '401':
     description: Unauthorized – access token is missing or invalid
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            status:
+              type: integer
+            message:
+              type: string
+            data:
+              type: string

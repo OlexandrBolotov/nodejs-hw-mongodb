@@ -14,7 +14,7 @@
       "url": "http://localhost:3000"
     },
     {
-      "url": "https://your-deployed-site.com"
+      "url": "https://nodejs-hw-mongodb-jfde.onrender.com"
     }
   ],
   "tags": [
@@ -105,6 +105,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "description": "Unauthorized – missing or invalid token"
           }
         }
       },
@@ -112,9 +115,9 @@
         "tags": [
           "Contacts"
         ],
-        "summary": "Create contact",
+        "summary": "Create a new contact",
         "operationId": "createContact",
-        "description": "Create a new contact",
+        "description": "Creates a new contact",
         "security": [
           {
             "bearerAuth": []
@@ -130,17 +133,23 @@
                   "name": {
                     "type": "string"
                   },
+                  "email": {
+                    "type": "string",
+                    "format": "email"
+                  },
                   "phoneNumber": {
                     "type": "string"
                   },
-                  "email": {
-                    "type": "string"
+                  "contactType": {
+                    "type": "string",
+                    "enum": [
+                      "personal",
+                      "work",
+                      "other"
+                    ]
                   },
                   "isFavourite": {
                     "type": "boolean"
-                  },
-                  "contactType": {
-                    "type": "string"
                   },
                   "photo": {
                     "type": "string",
@@ -153,7 +162,7 @@
         },
         "responses": {
           "201": {
-            "description": "Contact created",
+            "description": "Contact successfully created",
             "content": {
               "application/json": {
                 "schema": {
@@ -161,6 +170,12 @@
                 }
               }
             }
+          },
+          "400": {
+            "description": "Invalid input data"
+          },
+          "401": {
+            "description": "Unauthorized – missing or invalid token"
           }
         }
       }
@@ -259,7 +274,9 @@
             }
           },
           "404": {
-            "$ref": "#/components/responses/NotFound"
+            "401": null,
+            "$ref": "#/components/responses/NotFound",
+            "description": "Unauthorized – access token is missing or invalid"
           }
         }
       },
@@ -283,6 +300,9 @@
         "responses": {
           "204": {
             "description": "Successfully deleted"
+          },
+          "401": {
+            "description": "Unauthorized – access token is missing or invalid"
           },
           "404": {
             "$ref": "#/components/responses/NotFound"

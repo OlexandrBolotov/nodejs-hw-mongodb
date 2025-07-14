@@ -9,7 +9,7 @@ info:
     API for managing contacts.
 servers:
   - url: http://localhost:3000
-  - url: https://your-deployed-site.com
+  - url: https://nodejs-hw-mongodb-jfde.onrender.com
 tags:
   - name: Contacts
     description: Operations about contacts

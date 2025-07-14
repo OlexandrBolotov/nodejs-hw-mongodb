@@ -4,7 +4,9 @@ content:
     schema:
       type: object
       properties:
-        status:
-          type: integer
-        message:
-          type: string
+          status:
+            type: integer
+          message:
+            type: string
+          data:
+            type: string
